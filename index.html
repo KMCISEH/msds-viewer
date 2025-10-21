@@ -515,7 +515,7 @@
         }
 
         // === RENDER FILE LIST ===
-        function renderFileList(files) {
+        function renderFileList(files, isSearching = false) {
             fileList.innerHTML = '';
             
             if (files.length === 0) {
@@ -529,7 +529,7 @@
                 const groupedFiles = groupFilesByFolder(files);
                 
                 // 각 폴더 그룹 렌더링
-                Object.keys(groupedFiles).sort().forEach(folder => {
+                Object.keys(groupedFiles).forEach(folder => {
                     const folderGroup = document.createElement('div');
                     folderGroup.className = 'folder-group';
                     
@@ -553,24 +553,35 @@
                             folderFiles.appendChild(li);
                         });
                         
+                        // 초기 상태: 검색 중이면 펼침, 아니면 접힘
+                        if (!isSearching) {
+                            folderHeader.classList.add('collapsed');
+                            folderFiles.classList.add('collapsed');
+                        }
+                        
                         // 폴더 접기/펼치기 이벤트
                         folderHeader.addEventListener('click', (e) => {
                             e.stopPropagation();
                             folderHeader.classList.toggle('collapsed');
                             folderFiles.classList.toggle('collapsed');
+                            
+                            // 높이 재계산
+                            if (!folderFiles.classList.contains('collapsed')) {
+                                folderFiles.style.maxHeight = folderFiles.scrollHeight + 'px';
+                            }
                         });
                         
                         folderGroup.appendChild(folderHeader);
                         folderGroup.appendChild(folderFiles);
                         
-                        // 초기 높이 설정 (애니메이션을 위해)
+                        // 펼쳐진 상태일 때만 높이 설정
                         setTimeout(() => {
                             if (!folderFiles.classList.contains('collapsed')) {
                                 folderFiles.style.maxHeight = folderFiles.scrollHeight + 'px';
                             }
                         }, 0);
                     } else {
-                        // 최상위 파일들 (폴더 헤더 없음)
+                        // 최상위 파일들 (폴더 헤더 없음) - 항상 맨 위에 표시
                         groupedFiles[folder].forEach(file => {
                             const li = document.createElement('li');
                             li.className = 'file-item';
@@ -637,10 +648,18 @@
 
         // === SEARCH FILTER ===
         function filterFiles(searchTerm) {
-            const filtered = filesData.filter(file => 
-                file.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            renderFileList(filtered);
+            const isSearching = searchTerm.trim().length > 0;
+            
+            if (isSearching) {
+                // 검색어가 있으면 필터링하고 폴더 펼침
+                const filtered = filesData.filter(file => 
+                    file.name.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                renderFileList(filtered, true);
+            } else {
+                // 검색어가 없으면 전체 표시하고 폴더 접힘 (초기 상태)
+                renderFileList(filesData, false);
+            }
         }
 
         // === LOAD PDF IN VIEWER ===
