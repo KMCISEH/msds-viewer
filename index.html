@@ -73,39 +73,83 @@
             padding: 0 1rem;
         }
 
-        .search-box {
+        /* === ACTION BAR SECTION === */
+        .action-bar {
+            max-width: 1400px;
+            margin: 0 auto 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .action-bar-content {
             background: white;
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1rem 1.5rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-input-wrapper {
-            position: relative;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            color: #667eea;
+        .selected-file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .selected-file-info span:first-child {
             font-size: 1.2rem;
+            flex-shrink: 0;
         }
 
-        #searchInput {
-            width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            font-size: 1rem;
-            border: 2px solid #e0e7ff;
+        .selected-file-info span:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        #searchInput:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        .preview-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .preview-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .new-tab-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .new-tab-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
         }
 
         /* === MAIN CONTENT === */
@@ -388,6 +432,23 @@
             .open-new-tab {
                 width: 100%;
             }
+
+            .action-bar-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .selected-file-info {
+                width: 100%;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .action-btn {
+                flex: 1;
+            }
         }
 
         /* === SCROLLBAR STYLING === */
@@ -439,6 +500,20 @@
         </div>
     </div>
 
+    <!-- === SELECTED FILE ACTION BAR === -->
+    <div class="action-bar" id="actionBar" style="display: none;">
+        <div class="action-bar-content">
+            <div class="selected-file-info">
+                <span>📄</span>
+                <span id="selectedFileName">파일명</span>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn preview-btn" id="previewBtn">미리보기</button>
+                <button class="action-btn new-tab-btn" id="openNewTabBtn">새 탭에서 열기</button>
+            </div>
+        </div>
+    </div>
+
     <!-- === MAIN CONTENT === -->
     <div class="container">
         <!-- FILE LIST -->
@@ -464,7 +539,6 @@
                     <span>📄</span>
                     <span id="currentFileName">미리보기</span>
                 </div>
-                <button class="open-new-tab" id="openNewTab">새 탭에서 열기</button>
             </div>
             <div class="viewer-placeholder" id="viewerPlaceholder">
                 좌측 목록에서 파일을 선택하세요
@@ -487,7 +561,9 @@
         const pdfViewer = document.getElementById('pdfViewer');
         const viewerPlaceholder = document.getElementById('viewerPlaceholder');
         const currentFileName = document.getElementById('currentFileName');
-        const openNewTabBtn = document.getElementById('openNewTab');
+        const openNewTabBtn = document.getElementById('openNewTabBtn'); // Changed ID
+        const previewBtn = document.getElementById('previewBtn'); // New button
+        const actionBar = document.getElementById('actionBar'); // New action bar
         const loading = document.querySelector('.loading');
 
         // === INITIALIZE APP ===
@@ -525,9 +601,11 @@
             if (files.length === 0) {
                 noResults.style.display = 'block';
                 fileList.style.display = 'none';
+                actionBar.style.display = 'none'; // Hide action bar if no results
             } else {
                 noResults.style.display = 'none';
                 fileList.style.display = 'block';
+                actionBar.style.display = 'flex'; // Show action bar
                 
                 // 폴더별로 그룹화
                 const groupedFiles = groupFilesByFolder(files);
@@ -682,6 +760,7 @@
                 viewerPlaceholder.style.display = 'none';
                 currentFileName.textContent = name;
                 openNewTabBtn.style.display = 'block';
+                previewBtn.style.display = 'block'; // Show preview button
                 
                 // Update active state in file list
                 document.querySelectorAll('.file-item').forEach(item => {
@@ -716,6 +795,11 @@
             // Open in new tab button
             openNewTabBtn.addEventListener('click', openInNewTab);
 
+            // Preview button
+            previewBtn.addEventListener('click', () => {
+                loadPdf(currentPdfPath, currentFileName.textContent);
+            });
+
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 // Ctrl/Cmd + F: Focus search
@@ -741,6 +825,7 @@
                     <div>${message}</div>
                 </div>
             `;
+            actionBar.style.display = 'none'; // Hide action bar on error
         }
 
         // === START APPLICATION ===
@@ -748,5 +833,4 @@
     </script>
 </body>
 </html>
-
 
