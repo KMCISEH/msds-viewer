@@ -684,7 +684,7 @@
                 // GitHub Pages용: PDF.js 뷰어 사용
                 const githubPagesUrl = window.location.origin + window.location.pathname.replace('index.html', '');
                 const fullPdfUrl = githubPagesUrl + path;
-                const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fullPdfUrl)}`;
+                const viewerUrl = `./web/viewer.html?file=${encodeURIComponent(fullPdfUrl)}`;
                 
                 // 미리보기창 활성화
                 viewerSection.classList.add('active');
