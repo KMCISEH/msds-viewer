@@ -79,8 +79,7 @@
         .search-input-wrapper {
             position: relative;
             display: flex;
-            align-items: stretch; /* Stretch to align button and input heights */
-            gap: 1rem;
+            align-items: center;
         }
 
         .input-group {
@@ -131,33 +130,6 @@
 
         .clear-btn:hover {
             color: #667eea;
-        }
-
-        .search-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 0 2rem; /* Vertical padding by stretch */
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-            filter: brightness(1.1);
-        }
-
-        .search-btn:active {
-            transform: translateY(0);
         }
 
         /* === MAIN CONTENT === */
@@ -475,16 +447,10 @@
 
             .search-input-wrapper {
                 flex-direction: column;
-                gap: 0.5rem;
             }
 
             .input-group {
                 width: 100%;
-            }
-
-            .search-btn {
-                width: 100%;
-                padding: 1rem;
             }
 
             .search-box {
@@ -533,9 +499,6 @@
                     >
                     <button class="clear-btn" id="clearBtn" title="검색어 지우기">✕</button>
                 </div>
-                <button class="search-btn" id="searchBtn">
-                    <span>검색</span>
-                </button>
             </div>
         </div>
     </div>
@@ -583,7 +546,6 @@
         // === DOM ELEMENTS ===
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearBtn');
-        const searchBtn = document.getElementById('searchBtn');
         const fileList = document.getElementById('fileList');
         const fileCount = document.getElementById('fileCount');
         const noResults = document.getElementById('noResults');
@@ -823,12 +785,6 @@
                 searchInput.value = '';
                 clearBtn.style.display = 'none';
                 filterFiles('');
-                searchInput.focus();
-            });
-
-            // Search button
-            searchBtn.addEventListener('click', () => {
-                filterFiles(searchInput.value);
                 searchInput.focus();
             });
 
