@@ -618,7 +618,7 @@
                             li.className = 'file-item';
                             li.textContent = file.name;
                             li.dataset.path = file.path;
-                            li.addEventListener('click', () => loadPdf(file.path, file.name));
+                            li.addEventListener('click', () => loadPdf(file.path, file.name, li));
                             folderFiles.appendChild(li);
                         });
                         
@@ -657,7 +657,7 @@
                             li.style.marginLeft = '0';
                             li.textContent = file.name;
                             li.dataset.path = file.path;
-                            li.addEventListener('click', () => loadPdf(file.path, file.name));
+                            li.addEventListener('click', () => loadPdf(file.path, file.name, li));
                             folderGroup.appendChild(li);
                         });
                     }
@@ -731,15 +731,25 @@
             }
         }
 
+        // === GET BASE URL ===
+        function getBaseUrl() {
+            return window.location.origin + window.location.pathname.replace(/\/index\.html$/i, '/').replace(/\/+$/, '/');
+        }
+
+        // === GET FULL PDF URL ===
+        function getFullPdfUrl(path) {
+            return getBaseUrl() + encodeURIComponent(path).replace(/%2F/g, '/');
+        }
+
         // === LOAD PDF IN VIEWER ===
-        function loadPdf(path, name) {
+        function loadPdf(path, name, clickedElement) {
             try {
                 currentPdfPath = path;
                 
-                // GitHub Pages용: PDF.js 뷰어 사용
-                const githubPagesUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-                const fullPdfUrl = githubPagesUrl + path;
-                const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fullPdfUrl)}`;
+                const fullPdfUrl = getFullPdfUrl(path);
+
+                // Google Docs Viewer: 삼성인터넷, 크롬, 사파리 등 모든 브라우저 호환
+                const viewerUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(fullPdfUrl)}`;
                 
                 // Update UI
                 pdfViewer.src = viewerUrl;
@@ -752,7 +762,9 @@
                 document.querySelectorAll('.file-item').forEach(item => {
                     item.classList.remove('active');
                 });
-                event.target.classList.add('active');
+                if (clickedElement) {
+                    clickedElement.classList.add('active');
+                }
                 
             } catch (error) {
                 console.error('PDF 로딩 오류:', error);
@@ -763,11 +775,9 @@
         // === OPEN PDF IN NEW TAB ===
         function openInNewTab() {
             if (currentPdfPath) {
-                // PDF.js 뷰어로 새 탭에서 열기
-                const githubPagesUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-                const fullPdfUrl = githubPagesUrl + currentPdfPath;
-                const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fullPdfUrl)}`;
-                window.open(viewerUrl, '_blank');
+                const fullPdfUrl = getFullPdfUrl(currentPdfPath);
+                // 직접 PDF 링크로 열기 (브라우저 내장 뷰어 또는 다운로드)
+                window.open(fullPdfUrl, '_blank');
             }
         }
 
