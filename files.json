@@ -496,6 +496,10 @@
         "path": "MSDS/VAR/TDI미함유/국문_MSDS_THAMATE-1892_(2025_4차).pdf"
     },
     {
+        "name": "국문_MSDS_CG-1310_(2026-제정)",
+        "path": "MSDS/VAR/TDI함유/국문_MSDS_CG-1310_(2026-제정).pdf"
+    },
+    {
         "name": "국문_MSDS_CG-3080_(2025-4차)",
         "path": "MSDS/VAR/TDI함유/국문_MSDS_CG-3080_(2025-4차).pdf"
     },
@@ -538,6 +542,10 @@
     {
         "name": "국문_MSDS_CG-4100_(2025-4차)",
         "path": "MSDS/VAR/TDI함유/국문_MSDS_CG-4100_(2025-4차).pdf"
+    },
+    {
+        "name": "국문_MSDS_CG-4490_(2026-제정)",
+        "path": "MSDS/VAR/TDI함유/국문_MSDS_CG-4490_(2026-제정).pdf"
     },
     {
         "name": "국문_MSDS_CG-4850_(2025_2차)",
@@ -594,10 +602,6 @@
     {
         "name": "국문_MSDS_MC-85W_(2025-11차)",
         "path": "MSDS/VAR/TDI함유/국문_MSDS_MC-85W_(2025-11차).pdf"
-    },
-    {
-        "name": "국문_MSDS_CG-4490_(2026-제정)",
-        "path": "MSDS/VAR/TDI함유/국문_MSDS_CG-4490_(2026-제정).pdf"
     },
     {
         "name": "국문_MSDS_29퍼센트 HCl_(2025_1차)",
